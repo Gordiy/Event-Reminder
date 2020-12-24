@@ -6,8 +6,6 @@ const server = require("http").Server(app);
 
 const rooms = new Map();
 
-
-
 app.get('/home', (req, resp)=>{
     resp.send('hello')
 })
