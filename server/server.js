@@ -11,10 +11,12 @@ const client = new Client({
 
 client.connect()
 
-client.query('SELECT $1::text as message', ['Hello world!'], (err, res) => {
-    console.log(err ? err.stack : res.rows[0].message) // Hello World!
+client.query('SELECT NOW()', (err, res) => {
+    if (err) throw err
+    console.log(res)
     client.end()
 })
+
 
 const app = express();
 const server = require("http").Server(app);

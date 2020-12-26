@@ -1,14 +1,28 @@
-import React from 'react';
+import React, {useState} from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
+
+import 'react-calendar/dist/Calendar.css';
 import reportWebVitals from './reportWebVitals';
+import Calendar from 'react-calendar';
+
+const ReactCalendar = () => {
+	const [date, setDate] = useState(new Date());
+
+	const onDayClick = () => {
+		{console.log("Hello")}
+	}
+
+	return (
+		<div>
+			<Calendar onClickDay={onDayClick} />
+			{console.log(date)}
+		</div>
+	)
+}
 
 ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  document.getElementById('root')
+  <ReactCalendar/>,
+  document.querySelector('#root')
 );
 
 // If you want to start measuring performance in your app, pass a function
