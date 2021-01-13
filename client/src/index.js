@@ -24,23 +24,19 @@ class EventCalendar extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			showPopup: true
+			showPopup: false
 		  };
 
 		// this.onDayClick = this.onDayClick.bind(this);
 		this.togglePopup = this.togglePopup.bind(this);
 	}
 
-	togglePopup() {
+	togglePopup(date) {
+		console.log(date)
 		this.setState({
 		  showPopup: !this.state.showPopup
 		});
 	  }
-
-	onDayClick(e) {
-		console.log(e)
-		this.togglePopup.bind(this);
-	}
 
 	render() {
 		return(
@@ -56,73 +52,6 @@ class EventCalendar extends React.Component {
 				</div>
 			)
 	}
-}
-
-const Modal = () => (
-  <Popup
-	open={true}
-    // trigger={<button className="button"> Open Modal </button>}
-    modal
-    nested
-  >
-    {close => (
-      <div className="modal">
-        <button className="close" onClick={close}>
-          &times;
-        </button>
-        <div className="header"> Modal Title </div>
-        <div className="content">
-          {' '}
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Atque, a nostrum.
-          Dolorem, repellat quidem ut, minima sint vel eveniet quibusdam voluptates
-          delectus doloremque, explicabo tempore dicta adipisci fugit amet dignissimos?
-          <br />
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Consequatur sit
-          commodi beatae optio voluptatum sed eius cumque, delectus saepe repudiandae
-          explicabo nemo nam libero ad, doloribus, voluptas rem alias. Vitae?
-        </div>
-        <div className="actions">
-          <Popup
-            trigger={<button className="button"> Trigger </button>}
-            position="top center"
-            nested
-          >
-            <span>
-              Lorem ipsum dolor sit amet, consectetur adipisicing elit. Beatae
-              magni omnis delectus nemo, maxime molestiae dolorem numquam
-              mollitia, voluptate ea, accusamus excepturi deleniti ratione
-              sapiente! Laudantium, aperiam doloribus. Odit, aut.
-            </span>
-          </Popup>
-          <button
-            className="button"
-            onClick={() => {
-              console.log('modal closed ');
-              close();
-            }}
-          >
-            close modal
-          </button>
-        </div>
-      </div>
-    )}
-  </Popup>
-);
-
-
-const ReactCalendar = () => {
-	const [date, setDate] = useState(new Date());
-
-	const onDayClick = () => {
-		{console.log("Hello")}
-	}
-
-	return (
-		<div>
-			<Calendar onClickDay={onDayClick} />
-			{console.log(date)}
-		</div>
-	)
 }
 
 ReactDOM.render(
