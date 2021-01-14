@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import ReactDOM from 'react-dom';
 import './index.css'
-
+import {EventForm} from './modules';
 import 'react-calendar/dist/Calendar.css';
 import reportWebVitals from './reportWebVitals';
 import Calendar from 'react-calendar';
@@ -12,6 +12,7 @@ class Popup extends React.Component {
 	  return (
 		<div className='popup'>
 		  <div className='popup_inner'>
+			<EventForm/>
 			<h1>{this.props.text}</h1>
 		  <button onClick={this.props.closePopup}>close me</button>
 		  </div>
