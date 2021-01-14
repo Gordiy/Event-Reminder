@@ -5,18 +5,27 @@ import {EventForm} from './modules';
 import 'react-calendar/dist/Calendar.css';
 import reportWebVitals from './reportWebVitals';
 import Calendar from 'react-calendar';
-// import Popup from 'reactjs-popup';
+import { Modal } from 'react-bootstrap';
+import { Button } from 'react-bootstrap';
+
 
 class Popup extends React.Component {
 	render() {
 	  return (
-		<div className='popup'>
-		  <div className='popup_inner'>
-			<EventForm/>
-			<h1>{this.props.text}</h1>
-		  <button onClick={this.props.closePopup}>close me</button>
-		  </div>
-		</div>
+		<Modal.Dialog>
+			<Modal.Header closeButton>
+				<Modal.Title>Modal title</Modal.Title>
+			</Modal.Header>
+
+			<Modal.Body>
+				<p>{this.props.text}</p>
+			</Modal.Body>
+
+			<Modal.Footer>
+				<Button onClick={this.props.closePopup} variant="secondary">Close</Button>
+				<Button variant="primary">Save changes</Button>
+			</Modal.Footer>
+		</Modal.Dialog>
 	  );
 	}
   }
