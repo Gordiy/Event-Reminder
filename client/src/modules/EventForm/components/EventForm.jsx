@@ -8,27 +8,44 @@ class EventForm extends React.Component {
     constructor() {
         super()
     }
-    
+
     render() {
+        const hours = [];
+        for (let index = 1; index <= 24; index++) {
+            hours.push(<option>{index}</option>)
+        }
+
+        const minutes = [];
+        for (let index = 1; index <= 60; index++) {
+            minutes.push(<option>{index}</option>)
+        }
+        
         return (
             <Form>
                 <Form.Group controlId="formBasicEmail">
-                    <Form.Label>Email address</Form.Label>
-                    <Form.Control type="email" placeholder="Enter email" />
-                    <Form.Text className="text-muted">
-                    We'll never share your email with anyone else.
-                    </Form.Text>
+                    <Form.Label>Hours</Form.Label>
+                    <Form.Control as="select">
+                        {hours}
+                    </Form.Control>
+
+                    <Form.Label>Minutes</Form.Label>
+                    <Form.Control as="select">
+                        {minutes}
+                    </Form.Control>
+
+                    <Form.Label>Notification Label</Form.Label>
+                    <Form.Control type="text" placeholder="Label" />
                 </Form.Group>
 
-                <Form.Group controlId="formBasicPassword">
-                    <Form.Label>Password</Form.Label>
-                    <Form.Control type="password" placeholder="Password" />
+                <Form.Group controlId="exampleForm.ControlTextarea1">
+                    <Form.Label>Notification Text</Form.Label>
+                    <Form.Control as="textarea" rows={3} />
                 </Form.Group>
                 <Form.Group controlId="formBasicCheckbox">
                     <Form.Check type="checkbox" label="Check me out" />
                 </Form.Group>
                 <Button variant="primary" type="submit">
-                    Submit
+                    Save
                 </Button>
             </Form>
         )

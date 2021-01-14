@@ -18,7 +18,7 @@ class Popup extends React.Component {
 			</Modal.Header>
 
 			<Modal.Body>
-				<p>{this.props.text}</p>
+				<EventForm></EventForm>
 			</Modal.Body>
 
 			<Modal.Footer>
@@ -37,7 +37,6 @@ class EventCalendar extends React.Component {
 			showPopup: false
 		  };
 
-		// this.onDayClick = this.onDayClick.bind(this);
 		this.togglePopup = this.togglePopup.bind(this);
 	}
 
