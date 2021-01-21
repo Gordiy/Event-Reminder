@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css'
 import {EventForm} from './modules';
@@ -6,27 +6,47 @@ import 'react-calendar/dist/Calendar.css';
 import reportWebVitals from './reportWebVitals';
 import Calendar from 'react-calendar';
 import { Modal } from 'react-bootstrap';
-import { Button } from 'react-bootstrap';
+// import { Button } from 'react-bootstrap';
 
 
 class Popup extends React.Component {
+	constructor(props) {
+		super(props)
+		this.state = {
+			hours: 1,
+			minutes: 1,
+			date: new Date(props.date),
+			label: '',
+			text: ''
+		};
+		this.handleSubmit = this.handleSubmit.bind(this);
+		this.handleChange = this.handleChange.bind(this);
+	}
+
+	handleSubmit = (event) => {
+		console.log("Submit state", this.state)
+		event.preventDefault();
+	}
+
+	handleChange = (event) => {
+		this.setState({[event.target.name]: event.target.value});
+	}
+
 	render() {
-	  return (
-		<Modal.Dialog>
-			<Modal.Header closeButton>
-				<Modal.Title>Modal title</Modal.Title>
-			</Modal.Header>
+		return (
+			<Modal.Dialog>
+				<Modal.Header closeButton onClick={this.props.closePopup}>
+					<Modal.Title>Create Notification</Modal.Title>
+				</Modal.Header>
 
-			<Modal.Body>
-				<EventForm></EventForm>
-			</Modal.Body>
-
-			<Modal.Footer>
-				<Button onClick={this.props.closePopup} variant="secondary">Close</Button>
-				<Button variant="primary">Save changes</Button>
-			</Modal.Footer>
-		</Modal.Dialog>
-	  );
+				<Modal.Body>
+					<EventForm 
+						handleSubmit={this.handleSubmit}
+						handleChange={this.handleChange}
+					/>
+				</Modal.Body>
+			</Modal.Dialog>
+		);
 	}
   }
 
@@ -38,10 +58,11 @@ class EventCalendar extends React.Component {
 		  };
 
 		this.togglePopup = this.togglePopup.bind(this);
+		this.date = undefined;
 	}
 
 	togglePopup(date) {
-		console.log(date)
+		this.date = date;
 		this.setState({
 		  showPopup: !this.state.showPopup
 		});
@@ -55,6 +76,7 @@ class EventCalendar extends React.Component {
 						<Popup
 							text='Close Me'
 							closePopup={this.togglePopup.bind(this)}
+							date={this.date}
 						/>
 						: null
 					}
