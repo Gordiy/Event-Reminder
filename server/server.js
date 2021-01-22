@@ -1,5 +1,6 @@
 const express = require('express');
-const { Client } = require('pg')
+const { Client } = require('pg');
+
 
 const client = new Client({
     host: 'localhost',
@@ -11,8 +12,10 @@ const client = new Client({
 
 client.connect()
 
-client.query('SELECT NOW()', (err, res) => {
-    if (err) throw err
+client.query('SELECT * FROM event;', (err, res) => {
+    if (err) {
+        throw err
+    }
     console.log(res)
     client.end()
 })
@@ -23,8 +26,39 @@ const server = require("http").Server(app);
 
 const rooms = new Map();
 
+const sendEventRequest = (event) => {
+    console.log("hello")
+}
+
 app.get('/home', (req, resp)=>{
-    resp.send('hello')
+    if(req.method === 'POST') {
+        console.log(req);
+        resp.send('POST:hello')
+    } else {
+        console.log("GET", req);
+        resp.statusCode = 204;
+        resp.set("Access-Control-Allow-Origin", "*");
+        resp.set("Access-Control-Allow-Methods", "DELETE, POST, GET, OPTIONS");
+        resp.set("Access-Control-Allow-Headers", "Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
+        resp.send('GET:hello')
+    }
+})
+
+app.post('/home', (req, resp)=>{
+    if(req.method === 'POST') {
+        console.log(req);
+        resp.statusCode = 204;
+        resp.setHeader('Access-Control-Allow-Origin', '*');
+        resp.send('POST:hello')
+    } else {
+        console.log("GET", req);
+        resp.statusCode = 204;
+        resp.setHeader('Access-Control-Allow-Origin', '*');
+        // resp.set("Access-Control-Allow-Origin", "*");
+        // resp.set("Access-Control-Allow-Methods", "DELETE, POST, GET, OPTIONS");
+        // resp.set("Access-Control-Allow-Headers", "Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
+        resp.send('GET:hello')
+    }
 })
 
 server.listen(8000, (err) => {

@@ -6,6 +6,7 @@ import 'react-calendar/dist/Calendar.css';
 import reportWebVitals from './reportWebVitals';
 import Calendar from 'react-calendar';
 import { Modal } from 'react-bootstrap';
+const axios = require('axios').default;
 // import { Button } from 'react-bootstrap';
 
 
@@ -19,6 +20,7 @@ class Popup extends React.Component {
 			label: '',
 			text: ''
 		};
+		this.base_url = 'http://localhost:8000';
 		this.handleSubmit = this.handleSubmit.bind(this);
 		this.handleChange = this.handleChange.bind(this);
 	}
@@ -26,13 +28,31 @@ class Popup extends React.Component {
 	handleSubmit = (event) => {
 		console.log("Submit state", this.state)
 		event.preventDefault();
+		fetch('http://localhost:8000/home', {
+			mode: 'no-cors',
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({
+				name: 'hello',
+			}),
+		})
+		.then((res) => {
+			console.log(res.text())
+		})
+		.then((result) => {
+			console.log("result", result)
+		})
+		.catch((err) => console.log('error'))
 	}
-
+		
 	handleChange = (event) => {
 		this.setState({[event.target.name]: event.target.value});
 	}
 
 	render() {
+		console.log("state", this.state);
 		return (
 			<Modal.Dialog>
 				<Modal.Header closeButton onClick={this.props.closePopup}>
