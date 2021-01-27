@@ -1,6 +1,14 @@
 const express = require('express');
+const bodyParser = require('body-parser');
 const { Client } = require('pg');
+const cors = require('cors');
+const { EventDB } = require('./database');
 
+const router = express.Router();
+const app = express();
+app.use(cors());
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 
 const client = new Client({
     host: 'localhost',
@@ -11,59 +19,62 @@ const client = new Client({
 })
 
 client.connect()
+const eventDb = new EventDB(client, 'event')
 
 client.query('SELECT * FROM event;', (err, res) => {
     if (err) {
         throw err
     }
     console.log(res)
-    client.end()
 })
 
+// add router in the Express app.
+app.use("/", router);
 
-const app = express();
-const server = require("http").Server(app);
+router.post('/event-date', (request, response) => {
+    const date = request.body.date;
+})
 
-const rooms = new Map();
+router.post('/add-event', (request, response) => {
+    const minutes = request.body.minutes;
+    const hours = request.body.hours;
+    const date = request.body.date;
+    const label = request.body.label;
+    const text = request.body.text;
+    
+    let datetime = new Date(date);
+    datetime.setHours(hours);
+    datetime.setMinutes(minutes);
 
-const sendEventRequest = (event) => {
-    console.log("hello")
-}
-
-app.get('/home', (req, resp)=>{
-    if(req.method === 'POST') {
-        console.log(req);
-        resp.send('POST:hello')
+    let resp = {};
+    const eventData = eventDb.ProcessEventAdd(datetime, label, text);
+    
+    if(eventData.status !== undefined) {
+        resp.status = eventData.status;
+        if(resp.status === 'failed') {
+            response.statusCode = 500;
+        }
     } else {
-        console.log("GET", req);
-        resp.statusCode = 204;
-        resp.set("Access-Control-Allow-Origin", "*");
-        resp.set("Access-Control-Allow-Methods", "DELETE, POST, GET, OPTIONS");
-        resp.set("Access-Control-Allow-Headers", "Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
-        resp.send('GET:hello')
+        resp.status = 'exist';
+        resp.data = eventData;
     }
+    
+    response.send(resp)
 })
 
-app.post('/home', (req, resp)=>{
-    if(req.method === 'POST') {
-        console.log(req);
-        resp.statusCode = 204;
-        resp.setHeader('Access-Control-Allow-Origin', '*');
-        resp.send('POST:hello')
-    } else {
-        console.log("GET", req);
-        resp.statusCode = 204;
-        resp.setHeader('Access-Control-Allow-Origin', '*');
-        // resp.set("Access-Control-Allow-Origin", "*");
-        // resp.set("Access-Control-Allow-Methods", "DELETE, POST, GET, OPTIONS");
-        // resp.set("Access-Control-Allow-Headers", "Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
-        resp.send('GET:hello')
-    }
-})
+router.post('/event-data',(request,response) => {
+    let minutes = request.body.minutes;
+    let hours = request.body.hours;
+    let date = request.body.date;
+    
+    // datetime.getDate()
+    // datetime.getMonth() + 1
+    // datetime.getFullYear()
 
-server.listen(8000, (err) => {
-    if (err) {
-        throw Error(err);
-    }
-    console.log("Server started.")
+    eventDb.ProcessEvent(date, hours, minutes);
+    console.log(request.body);
+});
+
+app.listen(8000,() => {
+    console.log("Started on PORT 8000");
 })

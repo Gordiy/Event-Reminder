@@ -28,15 +28,12 @@ class Popup extends React.Component {
 	handleSubmit = (event) => {
 		console.log("Submit state", this.state)
 		event.preventDefault();
-		fetch('http://localhost:8000/home', {
-			mode: 'no-cors',
+		fetch(`${this.base_url}/add-event`, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
 			},
-			body: JSON.stringify({
-				name: 'hello',
-			}),
+			body: JSON.stringify(this.state),
 		})
 		.then((res) => {
 			console.log(res.text())
