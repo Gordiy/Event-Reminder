@@ -28,6 +28,7 @@ class Popup extends React.Component {
 	handleSubmit = (event) => {
 		console.log("Submit state", this.state)
 		event.preventDefault();
+
 		fetch(`${this.base_url}/add-event`, {
 			method: 'POST',
 			headers: {
@@ -83,6 +84,21 @@ class EventCalendar extends React.Component {
 		this.setState({
 		  showPopup: !this.state.showPopup
 		});
+
+		fetch(`${this.base_url}/event-date`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify(this.state),
+		})
+		.then((res) => {
+			console.log(res.text())
+		})
+		.then((result) => {
+			console.log("result", result)
+		})
+		.catch((err) => console.log('error'))
 	  }
 
 	render() {
