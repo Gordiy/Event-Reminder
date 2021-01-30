@@ -6,16 +6,31 @@ class EventDB {
     }
 
     _checkEventByDate(date) {
-        let event = undefined;
+        date = new Date(date).toLocaleDateString();
+        let all_events = undefined
+        let eventFounded = false;
 
-        date = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
-
-        this._client.query(`SELECT * FROM event WHERE detetime='${date}';`, (err, res) => {
+        this._client.query(`SELECT * FROM all_event;`, (err, res) => {
             if (err) {
                 throw err
             }
-            console.log(res)
+            all_events = res;
+            eventFounded = true;
         })
+        while(!eventFounded) {require('deasync').sleep(100);}
+
+        let result = [];
+        result = all_events.rows.filter(data => {
+            const dateString = data.detetime.toLocaleDateString();
+            return dateString.includes(date);
+        });
+
+        let eventData = undefined;
+        if(result.length > 0) {
+            eventData = result[0];
+        }
+
+        return eventData;
     }
 
     _checkEventByDateTime(datetime) {
@@ -53,7 +68,18 @@ class EventDB {
     }
 
     ProcessEventDate(date) {
-        date = new Date(date);
+        const eventData = this._checkEventByDate(date);
+        let data = undefined;
+
+        if(eventData !== undefined) {
+            data = {
+                hours: eventData.detetime.getHours(),
+                minutes: eventData.detetime.getMinutes(),
+                label: eventData.short_desc,
+                description: eventData.description
+            };
+        }
+        return data;
     }
 
     ProcessEventAdd(datetime, shortDescription, description) {

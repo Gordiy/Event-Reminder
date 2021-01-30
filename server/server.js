@@ -21,18 +21,24 @@ const client = new Client({
 client.connect()
 const eventDb = new EventDB(client, 'event')
 
-client.query('SELECT * FROM event;', (err, res) => {
-    if (err) {
-        throw err
-    }
-    console.log(res)
-})
-
 // add router in the Express app.
 app.use("/", router);
 
 router.post('/event-date', (request, response) => {
     const date = request.body.date;
+    let eventData = eventDb.ProcessEventDate(date);
+    let respData = {};
+
+    if(eventData !== undefined) {
+        respData.status = 'exist';
+        respData.data = eventData;
+    } else {
+        respData.status = 'not_exist';
+        respData.data = {};
+    }
+
+    console.log("Response event-date:", JSON.stringify(respData, null, '\t'));
+    response.send(respData)
 })
 
 router.post('/add-event', (request, response) => {
@@ -55,10 +61,10 @@ router.post('/add-event', (request, response) => {
             response.statusCode = 500;
         }
     } else {
-        resp.status = 'exist';
+        resp.status = 'changed';
         resp.data = eventData;
     }
-    
+
     response.send(resp)
 })
 
@@ -71,7 +77,7 @@ router.post('/event-data',(request,response) => {
     // datetime.getMonth() + 1
     // datetime.getFullYear()
 
-    eventDb.ProcessEvent(date, hours, minutes);
+    eventDb.ProcessEventDate(date, hours, minutes);
     console.log(request.body);
 });
 
