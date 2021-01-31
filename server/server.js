@@ -83,7 +83,7 @@ router.post('/add-event', (request, response) => {
             response.statusCode = 500;
         }
     } else {
-        resp.status = 'changed';
+        resp.status = 'success';
         resp.data = eventData;
     }
 

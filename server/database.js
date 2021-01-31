@@ -67,6 +67,28 @@ class EventDB {
         return status;
     }
 
+    _updateEvent(datetime, shortDescription, description) {
+        let eventFounded = false;
+        datetime = datetime.toLocaleString().replace(',', '');
+        const queryText = `UPDATE ${this._table}
+        SET short_desc = '${shortDescription}',
+        description = '${description}'
+        WHERE detetime = '${datetime}';`;
+
+        let status = {status: 'updated'};
+        
+        this._client.query(queryText,
+            (err, res) => {
+                if (err) {
+                    status.status = 'failed';
+                }
+                eventFounded = true;
+            }
+        )
+        while(!eventFounded) {require('deasync').sleep(100);} // wait for query success.
+        return status;
+    }
+
     ProcessEventDate(date) {
         const eventData = this._checkEventByDate(date);
         let data = undefined;
@@ -98,10 +120,12 @@ class EventDB {
 
     ProcessEventAdd(datetime, shortDescription, description) {
         let event = this._checkEventByDateTime(datetime);
-        let data = undefined;
+        let data = {};
         if(event.rowCount == 0) {
             event = this._addEvent(datetime, shortDescription, description);
             data = event;
+        } else {
+            event = this._updateEvent(datetime, shortDescription, description);
         }
 
         if(event.status === undefined) {
