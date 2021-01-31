@@ -47,6 +47,11 @@ class Popup extends React.Component {
 			},
 		});
 		this._eventInfo = JSON.parse(res.getBody('utf8'));
+		console.log("send request event info:", this._eventInfo)
+		this.setState({
+			label: this._eventInfo.data.label,
+			text: this._eventInfo.data.description
+		})
 	}
 
 	handleSubmit = (event) => {
@@ -69,23 +74,22 @@ class Popup extends React.Component {
 	}
 		
 	handleChange = (event) => {
-		this.setState({[event.target.name]: event.target.value});
-		console.log("Handle change state", this.state);
+		this.state[event.target.name] = event.target.value;
 
-		if(this._eventInfo.status === 'exist') {
-			this.sendRequest(this.state.date, this.state.hours, this.state.minutes);
-			this.setState({
-				[event.target.name]: event.target.value,
-				text: this._eventInfo.data.description,
-				label: this._eventInfo.data.label
-			});
-		} else {
-			this.setState({[event.target.name]: event.target.value})
+		console.log("target name", event.target.name);
+
+		if(event.target.name === 'label' || event.target.name === 'text') {
+			this.setState({[event.target.name]: event.target.value});
 		}
+
+		if(event.target.name === 'minutes' || event.target.name === 'hours') {
+			this.sendRequest(this.state.date, this.state.hours, this.state.minutes);
+		}
+		event.preventDefault();
+		console.log(this.state)
 	}
 
 	render() {
-		console.log("render", this.state);
 		return (
 			<Modal.Dialog>
 				<Modal.Header closeButton onClick={this.props.closePopup}>
@@ -126,7 +130,6 @@ class EventCalendar extends React.Component {
 			json: {'date': date},
 		});
 		this._eventInfo = JSON.parse(res.getBody('utf8'));
-		console.log("send request", this._eventInfo);
 	}
 
 	togglePopup(date) {

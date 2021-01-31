@@ -8,7 +8,6 @@ class EventForm extends React.Component {
     constructor(props) {
         super(props)
         this._eventInfo = props.eventInfo;
-        console.log("form constructor",props)
     }
     
     render() {
@@ -45,14 +44,12 @@ class EventForm extends React.Component {
                     </Form.Control>
 
                     <Form.Label>Short description</Form.Label>
-                    <Form.Control as="input" type="text" name="label" placeholder="Label" defaultValue={this.props.label} onChange={this.props.handleChange}/>
+                    <Form.Control as="input" type="text" name="label" placeholder="Short description" value={this.props.label ? this.props.label : ''} onChange={this.props.handleChange}/>
                 </Form.Group>
 
                 <Form.Group controlId="exampleForm.ControlTextarea1">
                     <Form.Label>Full description</Form.Label>
-                    <Form.Control as="textarea" name="text" rows={3} onChange={this.props.handleChange}>
-                        {this.props.text}
-                    </Form.Control>
+                    <Form.Control as="textarea" name="text" rows={3} value={this.props.text ? this.props.text : ''} onChange={this.props.handleChange} />
                 </Form.Group>
                 <Form.Group controlId="formBasicCheckbox">
                     <Button  type="submit" value="Submit" variant="primary">Save</Button>

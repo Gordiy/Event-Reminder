@@ -86,9 +86,11 @@ class EventDB {
         const eventData = this._checkEventByDateTime(datetime);
         let data = undefined;
         if(eventData !== undefined) {
-            data = {
-                label: eventData.rows[0].short_desc,
-                description: eventData.rows[0].description,
+            if(eventData.rows[0] !== undefined) {
+                data = {
+                    label: eventData.rows[0].short_desc,
+                    description: eventData.rows[0].description,
+                }
             }
         }
         return data;
