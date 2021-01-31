@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css'
 import {EventForm} from './modules';
+import {Footer} from './modules';
 import 'react-calendar/dist/Calendar.css';
 import reportWebVitals from './reportWebVitals';
 import Calendar from 'react-calendar';
@@ -162,6 +163,7 @@ class EventCalendar extends React.Component {
 
 ReactDOM.render(
 	<div>
+		<Footer></Footer>
 		<EventCalendar />
 	</div>,
   document.querySelector('#root')
