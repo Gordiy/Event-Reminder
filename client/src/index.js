@@ -13,20 +13,43 @@ const request = require('sync-request');
 class Popup extends React.Component {
 	constructor(props) {
 		super(props)
-		this.state = {
-			hours: 1,
-			minutes: 1,
-			date: new Date(props.date),
-			label: '',
-			text: ''
-		};
+		this._eventInfo = this.props.eventInfo;
+		
+		if(this._eventInfo.data.status === 'not_exist') {
+			this.state = {
+				hours: 1,
+				minutes: 1,
+				date: new Date(props.date),
+				label: '',
+				text: ''
+			};
+		} else {
+			this.state = {
+				hours: this._eventInfo.data.hours,
+				minutes: this._eventInfo.data.minutes,
+				date: new Date(props.date),
+				label: this._eventInfo.data.label,
+				text: this._eventInfo.data.description
+			}
+		}
+		
 		this.base_url = 'http://localhost:8000';
 		this.handleSubmit = this.handleSubmit.bind(this);
 		this.handleChange = this.handleChange.bind(this);
 	}
 
+	sendRequest(date, hours, minutes) {
+		var res = request('POST', `${this.base_url}/event-datetime`, {
+			json: {
+					'date': date,
+					'hours': hours,
+					'minutes': minutes
+			},
+		});
+		this._eventInfo = JSON.parse(res.getBody('utf8'));
+	}
+
 	handleSubmit = (event) => {
-		console.log("Submit state", this.state)
 		event.preventDefault();
 
 		fetch(`${this.base_url}/add-event`, {
@@ -47,11 +70,22 @@ class Popup extends React.Component {
 		
 	handleChange = (event) => {
 		this.setState({[event.target.name]: event.target.value});
+		console.log("Handle change state", this.state);
+
+		if(this._eventInfo.status === 'exist') {
+			this.sendRequest(this.state.date, this.state.hours, this.state.minutes);
+			this.setState({
+				[event.target.name]: event.target.value,
+				text: this._eventInfo.data.description,
+				label: this._eventInfo.data.label
+			});
+		} else {
+			this.setState({[event.target.name]: event.target.value})
+		}
 	}
 
 	render() {
-		console.log("state", this.state);
-		console.log('pop up', this.props.eventInfo);
+		console.log("render", this.state);
 		return (
 			<Modal.Dialog>
 				<Modal.Header closeButton onClick={this.props.closePopup}>
@@ -62,13 +96,17 @@ class Popup extends React.Component {
 					<EventForm 
 						handleSubmit={this.handleSubmit}
 						handleChange={this.handleChange}
-						eventInfo={this.props.eventInfo}
+						eventInfo={this._eventInfo}
+						label={this.state.label}
+						text={this.state.text}
+						hours={this.state.hours}
+						minutes={this.state.minutes}
 					/>
 				</Modal.Body>
 			</Modal.Dialog>
 		);
 	}
-  }
+}
 
 class EventCalendar extends React.Component {
 	constructor(props) {
@@ -88,6 +126,7 @@ class EventCalendar extends React.Component {
 			json: {'date': date},
 		});
 		this._eventInfo = JSON.parse(res.getBody('utf8'));
+		console.log("send request", this._eventInfo);
 	}
 
 	togglePopup(date) {
@@ -97,8 +136,7 @@ class EventCalendar extends React.Component {
 		});
 
 		if(!this.state.showPopup) {
-			this.sendRequest(date)
-			console.log(this._eventInfo)
+			this.sendRequest(date);
 		}
 	  }
 

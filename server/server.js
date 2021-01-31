@@ -37,8 +37,30 @@ router.post('/event-date', (request, response) => {
         respData.data = {};
     }
 
-    console.log("Response event-date:", JSON.stringify(respData, null, '\t'));
     response.send(respData)
+})
+
+router.post('/event-datetime', (request, response) => {
+    const date = request.body.date;
+    const hours = request.body.hours;
+    const minutes = request.body.minutes;
+
+    const datetime = new Date(date);
+    datetime.setHours(hours);
+    datetime.setMinutes(minutes);
+    
+    const eventData = eventDb.ProcessEventDatetime(datetime);
+    let respData = {}
+
+    if(eventData !== undefined) {
+        respData.status = 'exist';
+        respData.data = eventData;
+    } else {
+        respData.status = 'not_exist';
+        respData.data = {};
+    }
+    
+    response.send(respData);
 })
 
 router.post('/add-event', (request, response) => {
@@ -80,6 +102,8 @@ router.post('/event-data',(request,response) => {
     eventDb.ProcessEventDate(date, hours, minutes);
     console.log(request.body);
 });
+
+
 
 app.listen(8000,() => {
     console.log("Started on PORT 8000");
